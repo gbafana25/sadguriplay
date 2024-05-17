@@ -2,7 +2,7 @@
 
 Video/audio player for invidious instances. Made w/ Python and PyQt5
 
-# TODO
+## TODO
 - pause/play button should change text when toggled, if possible collapse w/ button that initially starts song
 - delete `.mp4` files when song has downloaded
 - volume controls
