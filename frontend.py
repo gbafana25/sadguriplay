@@ -24,6 +24,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         self.stopbtn.clicked.connect(self.stopTrack)
         self.pausebtn.clicked.connect(self.pauseTrack)
         self.downloadbtn.clicked.connect(self.downloadTrack)
+        self.refresh_playlistbtn.clicked.connect(self.refreshPlaylist)
         self.getPlaylist()
         #self.songlist.insertItem(0, "test")
 
@@ -33,11 +34,26 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
                 for d in data['idList']:
                       self.songlist.addItem(d['title'])
 
+    def refreshPlaylist(self):
+        self.songlist.clear()
+        self.getPlaylist()
+
+    def replaceTitle(self, old_title, new_title):
+        pdata = None 
+        with open("new_playlist.json", "r") as playlist:
+            pdata = json.load(playlist)
+        for d in pdata['idList']:
+            if d['title'] == old_title:
+                 d['title'] = new_title
+        with open("new_playlist.json", "w") as playlist:
+             json.dump(pdata, playlist)
+
     def playTrack(self):
           selected_song = self.songlist.currentItem().text()
           # get file w/ name matching selected_song
-          # play song
+          
           self.player = vlc.MediaPlayer("file:///home/gareth/vid-player/songs/"+selected_song+".mp3")
+          # play song
           self.player.play()
 
     def stopTrack(self):
@@ -47,13 +63,21 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         self.player.pause()
 
     def downloadTrack(self):
-        selected_song = self.songlist.currentItem().text()
+        selected_song = self.songlist.currentItem().text() 
         song_data = {}
         with open("new_playlist.json", "r") as playlist:
             data = json.load(playlist)
             for d in data['idList']:
                 if selected_song == d['title']:
+                     # if file name > x characters, shorten and change in playlist 
+                    before_len = len(selected_song)
+                    orig_title = selected_song
+                    selected_song = selected_song.replace("|", "").replace(" ", "")
+                    after_len = len(selected_song)
+                    if before_len != after_len:
+                        # replace title
+                        self.replaceTitle(orig_title, selected_song)
                     song_data = d
-        #print(song_data)
+                    #song_data['title'] = selected_song
 
-        backend.downloadVideo(song_data['id'], song_data['title'])
+                    backend.downloadVideo(song_data['id'], selected_song)
