@@ -32,6 +32,8 @@ def convertToMp3(name, src):
 	print(src)
 	#os.system("ffmpeg -i "+src+" "+name+".mp3")
 	subprocess.run(["ffmpeg", "-i", src, "songs/"+name+".mp3"])
+	# delete .mp4
+	subprocess.run(['rm', src])
 
 
 def searchVideos(term):

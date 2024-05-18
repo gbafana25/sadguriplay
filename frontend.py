@@ -15,13 +15,12 @@ class Gui(object):
 		self.show()
 
 class VidPlayer(QtWidgets.QMainWindow, Gui):
-    player = None
+    player = vlc.MediaPlayer()
     def __init__(self):
         super().__init__()
         self.load()
 
         self.playbtn.clicked.connect(self.playTrack)
-        self.stopbtn.clicked.connect(self.stopTrack)
         self.pausebtn.clicked.connect(self.pauseTrack)
         self.downloadbtn.clicked.connect(self.downloadTrack)
         self.refresh_playlistbtn.clicked.connect(self.refreshPlaylist)
@@ -50,11 +49,18 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
 
     def playTrack(self):
           selected_song = self.songlist.currentItem().text()
+          
           # get file w/ name matching selected_song
           
-          self.player = vlc.MediaPlayer("file:///home/gareth/vid-player/songs/"+selected_song+".mp3")
-          # play song
-          self.player.play()
+          #self.player = vlc.MediaPlayer("file:///home/gareth/vid-player/songs/"+selected_song+".mp3")
+          if selected_song != None:
+            self.player.set_mrl("file:///home/gareth/vid-player/songs/"+selected_song+".mp3")
+            if self.player.is_playing():
+                print(self.player.get_media())
+                self.player.stop()
+            # play song
+            self.player.play()
+            self.curr_song.setText(selected_song)
 
     def stopTrack(self):
         self.player.stop()
@@ -72,7 +78,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
                      # if file name > x characters, shorten and change in playlist 
                     before_len = len(selected_song)
                     orig_title = selected_song
-                    selected_song = selected_song.replace("|", "").replace(" ", "")
+                    selected_song = selected_song.replace("|", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "")
                     after_len = len(selected_song)
                     if before_len != after_len:
                         # replace title
@@ -81,3 +87,4 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
                     #song_data['title'] = selected_song
 
                     backend.downloadVideo(song_data['id'], selected_song)
+                    self.refreshPlaylist()
