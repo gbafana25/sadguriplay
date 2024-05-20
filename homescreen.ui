@@ -6,19 +6,25 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1045</width>
-    <height>651</height>
+    <width>1085</width>
+    <height>721</height>
    </rect>
   </property>
+  <property name="maximumSize">
+   <size>
+    <width>1085</width>
+    <height>800</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>vid-player</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>130</y>
+      <x>20</x>
+      <y>50</y>
       <width>281</width>
       <height>251</height>
      </rect>
@@ -75,26 +81,26 @@
    <widget class="QPushButton" name="playbtn">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>460</y>
+      <x>290</x>
+      <y>450</y>
       <width>91</width>
       <height>71</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>22</pointsize>
+      <pointsize>12</pointsize>
      </font>
     </property>
     <property name="text">
-     <string>Play</string>
+     <string>Select song</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pausebtn">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>460</y>
+      <x>40</x>
+      <y>450</y>
       <width>191</width>
       <height>71</height>
      </rect>
@@ -105,7 +111,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Pause/Resume</string>
+     <string>Play/Resume</string>
     </property>
    </widget>
    <widget class="QPushButton" name="refresh_playlistbtn">
@@ -124,8 +130,8 @@
    <widget class="QLabel" name="curr_song">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>560</y>
+      <x>240</x>
+      <y>550</y>
       <width>611</width>
       <height>31</height>
      </rect>
@@ -142,13 +148,108 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QLabel" name="volume_label">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>370</y>
+      <width>51</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QSlider" name="volume_control">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>180</y>
+      <width>16</width>
+      <height>160</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="duration_label">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>600</y>
+      <width>54</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>0:00</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="curr_time">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>600</y>
+      <width>54</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>0:00</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="time_bar">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>620</y>
+      <width>411</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+    <property name="textVisible">
+     <bool>false</bool>
+    </property>
+    <property name="format">
+     <string>%v</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1045</width>
+     <width>1085</width>
      <height>22</height>
     </rect>
    </property>

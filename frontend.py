@@ -1,8 +1,9 @@
 from PyQt5 import QtWidgets, QtCore, uic 
+from PyQt5.QtCore import QTimer
 import json
-import os
 import vlc
 import backend
+import time
 
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
@@ -16,6 +17,7 @@ class Gui(object):
 
 class VidPlayer(QtWidgets.QMainWindow, Gui):
     player = vlc.MediaPlayer()
+    curr_volume_level = 0
     def __init__(self):
         super().__init__()
         self.load()
@@ -24,7 +26,14 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         self.pausebtn.clicked.connect(self.pauseTrack)
         self.downloadbtn.clicked.connect(self.downloadTrack)
         self.refresh_playlistbtn.clicked.connect(self.refreshPlaylist)
+        self.volume_control.setRange(0, 100)
+        self.volume_control.setValue(50)
+        self.volume_label.setText("50")
+        self.player.audio_set_volume(50)
+        self.volume_control.setSingleStep(5) 
+        self.volume_control.valueChanged.connect(self.getVolume)
         self.getPlaylist()
+        #self.getVolume()
         #self.songlist.insertItem(0, "test")
 
     def getPlaylist(self):
@@ -62,11 +71,36 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
             self.player.play()
             self.curr_song.setText(selected_song)
 
+            self.elapsed_timer = QTimer(self)
+            self.elapsed_timer.timeout.connect(self.updateDuration)
+            time.sleep(2)
+            dur_seconds = int((self.player.get_length() / 1000)%60)
+            dur_minutes = int((self.player.get_length() / 1000 / 60)%60)
+            self.duration_label.setText(str(dur_minutes)+":"+"{0:02d}".format(dur_seconds))
+            self.elapsed_timer.start(5)
+            
+            self.time_bar.setMaximum(self.player.get_length())
+
+    def updateDuration(self):
+        seconds = int((self.player.get_time() / 1000) % 60)
+        minutes = int((self.player.get_time() / 1000 / 60)  % 60)
+        self.curr_time.setText(str(minutes)+":"+"{0:02d}".format(seconds))
+        self.time_bar.setValue(self.player.get_time())
+        self.update()
+        self.time_bar.setValue(self.player.get_time())
+
     def stopTrack(self):
         self.player.stop()
 
     def pauseTrack(self):
         self.player.pause()
+        #self.curr_time.setText('{0:.2f}'.format((self.player.get_time() / 1000)/60))
+    
+    def getVolume(self, value):
+         #self.curr_volume_level = str(self.player.audio_get_volume())
+         #self.volume_label.setText(self.curr_volume_level)
+        self.volume_label.setText(str(value))
+        self.player.audio_set_volume(value)
 
     def downloadTrack(self):
         selected_song = self.songlist.currentItem().text() 
@@ -78,7 +112,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
                      # if file name > x characters, shorten and change in playlist 
                     before_len = len(selected_song)
                     orig_title = selected_song
-                    selected_song = selected_song.replace("|", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "")
+                    selected_song = selected_song.replace("|", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace("\"", "")
                     after_len = len(selected_song)
                     if before_len != after_len:
                         # replace title
