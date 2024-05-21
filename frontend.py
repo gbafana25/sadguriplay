@@ -18,6 +18,8 @@ class Gui(object):
 class VidPlayer(QtWidgets.QMainWindow, Gui):
     player = vlc.MediaPlayer()
     curr_volume_level = 0
+    search_data = {}
+
     def __init__(self):
         super().__init__()
         self.load()
@@ -31,15 +33,28 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         self.volume_label.setText("50")
         self.player.audio_set_volume(50)
         self.volume_control.setSingleStep(5) 
+        self.search_btn.clicked.connect(self.runSearch)
+        self.online_dloadbtn.clicked.connect(self.downloadOnline)
         self.volume_control.valueChanged.connect(self.getVolume)
         self.getPlaylist()
         #self.getVolume()
         #self.songlist.insertItem(0, "test")
 
+    def runSearch(self):
+        term = self.search_bar.text()
+        self.search_data = backend.searchVideos(term)
+        self.songlist.clear()
+        for r in self.search_data:
+            if r['type'] == 'video':
+                # put in playlist view
+                #print(r['title'])
+                self.songlist.addItem(r['title'])
+        self.online_dloadbtn.setEnabled(True)
+
     def getPlaylist(self):
           with open("new_playlist.json", "r") as playlist:
-                data = json.load(playlist)
-                for d in data['idList']:
+                self.search_data = json.load(playlist)
+                for d in self.search_data['idList']:
                       self.songlist.addItem(d['title'])
 
     def refreshPlaylist(self):
@@ -101,6 +116,25 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
          #self.volume_label.setText(self.curr_volume_level)
         self.volume_label.setText(str(value))
         self.player.audio_set_volume(value)
+
+    def downloadOnline(self):
+        selected_song = self.songlist.currentItem().text()
+        all_songs = {}
+        new_title = None
+        for s in self.search_data:
+            if s['type'] == 'video' and s['title'] == selected_song:
+                #print(s['title'], s['videoId'])
+                with open("new_playlist.json", "r") as playlist:
+                    all_songs = json.load(playlist)
+                    new_title = selected_song.replace("|", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace("\"", "")
+                    all_songs['idList'].append({'title':new_title, 'id':s['videoId'], 'author':s['author']}) 
+                with open("new_playlist.json", "w") as playlist_new:
+                    json.dump(all_songs, playlist_new)
+                backend.downloadVideo(s['videoId'], new_title) 
+                break
+        self.refreshPlaylist()
+        self.search_bar.setText("")
+        self.online_dloadbtn.setEnabled(False)
 
     def downloadTrack(self):
         selected_song = self.songlist.currentItem().text() 

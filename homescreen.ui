@@ -47,13 +47,16 @@
      </property>
      <item>
       <widget class="QPushButton" name="downloadbtn">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="text">
-        <string>Download selected track</string>
+        <string>Download saved track</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="search">
+      <widget class="QPushButton" name="searchbtn">
        <property name="text">
         <string>Song Search</string>
        </property>
@@ -72,7 +75,7 @@
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>30</y>
+      <y>50</y>
       <width>551</width>
       <height>461</height>
      </rect>
@@ -118,7 +121,7 @@
     <property name="geometry">
      <rect>
       <x>460</x>
-      <y>500</y>
+      <y>520</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -131,7 +134,7 @@
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>550</y>
+      <y>570</y>
       <width>611</width>
       <height>31</height>
      </rect>
@@ -186,7 +189,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>600</y>
+      <y>620</y>
       <width>54</width>
       <height>17</height>
      </rect>
@@ -207,7 +210,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>600</y>
+      <y>620</y>
       <width>54</width>
       <height>17</height>
      </rect>
@@ -228,7 +231,7 @@
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>620</y>
+      <y>640</y>
       <width>411</width>
       <height>23</height>
      </rect>
@@ -241,6 +244,45 @@
     </property>
     <property name="format">
      <string>%v</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="search_bar">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>10</y>
+      <width>481</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="search_btn">
+    <property name="geometry">
+     <rect>
+      <x>940</x>
+      <y>10</y>
+      <width>80</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Search</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="online_dloadbtn">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>520</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Download Search</string>
     </property>
    </widget>
   </widget>

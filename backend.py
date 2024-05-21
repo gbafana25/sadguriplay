@@ -37,17 +37,12 @@ def convertToMp3(name, src):
 
 
 def searchVideos(term):
-	# returns first video from search
-	if(term != None):
-		print("searching...")
-		r = requests.get(URL+"/api/v1/search?q="+term)
-		p = r.json()	
-		return (p[0]['videoId'], p[0]['title'], "n", slugTerm(term))
-
-	qu = input("Search> ")	
 	print("searching...")
-	r = requests.get(URL+"/api/v1/search?q="+qu)
+	r = requests.get(BASE_URLS[2]+"/api/v1/search?q="+term)
 	p = r.json()
+	return p
+	#print(p)
+	"""
 	count = 0
 	vid_list = []
 	for e in range(10):
@@ -71,6 +66,7 @@ def searchVideos(term):
 		if vid_list[i][0] == int(v):
 			form = input("Keep as video? [y/n] ").lower()	
 			return (p[vid_list[i][1]]['videoId'], p[vid_list[i][1]]['title'], form, slugTerm(qu))
+	"""
 		
 
 def downloadVideo(l, full_name):
