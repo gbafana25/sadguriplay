@@ -4,4 +4,4 @@ Video/audio player for invidious instances. Made w/ Python and PyQt5
 
 ## TODO
 - settings page
-- toggle to show whole playlist versus songs downloaded
+- modify any paths to be absolute (see previous qt apps on how to join paths)

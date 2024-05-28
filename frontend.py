@@ -1,9 +1,11 @@
+#!/usr/bin/python3
 from PyQt5 import QtWidgets, QtCore, uic 
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, Qt
 import json
 import vlc
 import backend
 import time
+import os
 
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
@@ -19,6 +21,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
     player = vlc.MediaPlayer()
     curr_volume_level = 0
     search_data = {}
+    download_only = False
 
     def __init__(self):
         super().__init__()
@@ -36,26 +39,57 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         self.search_btn.clicked.connect(self.runSearch)
         self.online_dloadbtn.clicked.connect(self.downloadOnline)
         self.volume_control.valueChanged.connect(self.getVolume)
+        self.dloads_only_btn.clicked.connect(self.filterByDownloaded)
         self.getPlaylist()
         #self.getVolume()
         #self.songlist.insertItem(0, "test")
 
+    def runLocalSearch(self):
+        files = os.listdir('songs')
+        for f in files:
+            self.songlist.addItem(f[:-4])
+        
+        res = self.songlist.findItems(self.search_bar.text(), Qt.MatchContains)
+        return res
+
+
     def runSearch(self):
         term = self.search_bar.text()
-        self.search_data = backend.searchVideos(term)
         self.songlist.clear()
-        for r in self.search_data:
-            if r['type'] == 'video':
-                # put in playlist view
-                #print(r['title'])
-                self.songlist.addItem(r['title'])
-        self.online_dloadbtn.setEnabled(True)
+        if self.online_option.isChecked():
+            self.search_data = backend.searchVideos(term)
+            for r in self.search_data:
+                if r['type'] == 'video':
+                    # put in playlist view
+                    #print(r['title'])
+                    self.songlist.addItem(r['title'])
+            self.online_dloadbtn.setEnabled(True)
+        else:
+            results = self.runLocalSearch()
+            txt_res = []
+            for r in results:
+                txt_res.append(r.text())
+            self.songlist.clear()
+            for t in txt_res:
+                self.songlist.addItem(t)
+        
 
     def getPlaylist(self):
           with open("new_playlist.json", "r") as playlist:
                 self.search_data = json.load(playlist)
                 for d in self.search_data['idList']:
                       self.songlist.addItem(d['title'])
+    
+    def filterByDownloaded(self):
+        self.songlist.clear()
+        if self.download_only == False:
+            files = os.listdir('songs')
+            for f in files:
+                self.songlist.addItem(f[:-4])
+            self.download_only = True
+        else:
+            self.getPlaylist()
+            self.download_only = False
 
     def refreshPlaylist(self):
         self.songlist.clear()
@@ -126,7 +160,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
                 #print(s['title'], s['videoId'])
                 with open("new_playlist.json", "r") as playlist:
                     all_songs = json.load(playlist)
-                    new_title = selected_song.replace("|", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace("\"", "")
+                    new_title = selected_song.replace("|", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace("\"", "").replace("#", "")
                     all_songs['idList'].append({'title':new_title, 'id':s['videoId'], 'author':s['author']}) 
                 with open("new_playlist.json", "w") as playlist_new:
                     json.dump(all_songs, playlist_new)
