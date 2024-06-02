@@ -11,6 +11,8 @@ import subprocess
 #BASE_URL = "https://invidious.slipfox.xyz/api/v1"
 BASE_URLS = ["https://inv.tux.pizza", "https://invidious.protokolla.fi", "https://invidious.io.lol"]
 URL = ""
+base_path = os.path.expanduser("~/sideplay/")
+playlist_path = base_path+"new_playlist.json"
 
 # removes characters that cause ffmpeg command to fail
 def sanitizeTitle(name):
@@ -31,7 +33,7 @@ def convertToMp3(name, src):
 	print(name)
 	print(src)
 	#os.system("ffmpeg -i "+src+" "+name+".mp3")
-	subprocess.run(["ffmpeg", "-i", src, "songs/"+name+".mp3"])
+	subprocess.run(["ffmpeg", "-i", src, base_path+"songs/"+name+".mp3"])
 	# delete .mp4
 	subprocess.run(['rm', src])
 
@@ -118,18 +120,18 @@ def getVideoId(vid_id):
 	if data != None:	
 		if 'title' in data and 'author' in data:
 			print(data['title'], data['author'])
-		if os.path.exists("new_playlist.json") == False:
-			with open("new_playlist.json", "w+") as p:
+		if os.path.exists(playlist_path) == False:
+			with open(playlist_path, "w+") as p:
 				d = {
 					'idList': []
 				}
 				json.dump(d, p)
 
-		with open("new_playlist.json", "r") as playlist:
+		with open(playlist_path, "r") as playlist:
 			plist = json.load(playlist)
 			if 'title' in data and 'videoId' in data and 'author' in data:
 				plist['idList'].append({"title": data['title'], "id": data['videoId'], "author": data['author']})
 		
-		with open("new_playlist.json", "w") as playlist:
+		with open(playlist_path, "w") as playlist:
 			json.dump(plist, playlist)
 

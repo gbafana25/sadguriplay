@@ -10,11 +10,14 @@ import os
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
+base_path = os.path.expanduser("~/sideplay/")
+playlist_path = base_path+"new_playlist.json"
+
 class Gui(object):
 
 	def load(self):
 		super(Gui, self).__init__()
-		uic.loadUi('homescreen.ui', self)
+		uic.loadUi(base_path+'homescreen.ui', self)
 		self.show()
 
 class VidPlayer(QtWidgets.QMainWindow, Gui):
@@ -45,7 +48,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         #self.songlist.insertItem(0, "test")
 
     def runLocalSearch(self):
-        files = os.listdir('songs')
+        files = os.listdir(base_path+'songs')
         for f in files:
             self.songlist.addItem(f[:-4])
         
@@ -75,7 +78,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         
 
     def getPlaylist(self):
-          with open("new_playlist.json", "r") as playlist:
+          with open(playlist_path, "r") as playlist:
                 self.search_data = json.load(playlist)
                 for d in self.search_data['idList']:
                       self.songlist.addItem(d['title'])
@@ -83,7 +86,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
     def filterByDownloaded(self):
         self.songlist.clear()
         if self.download_only == False:
-            files = os.listdir('songs')
+            files = os.listdir(base_path+'songs')
             for f in files:
                 self.songlist.addItem(f[:-4])
             self.download_only = True
@@ -97,12 +100,12 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
 
     def replaceTitle(self, old_title, new_title):
         pdata = None 
-        with open("new_playlist.json", "r") as playlist:
+        with open(playlist_path, "r") as playlist:
             pdata = json.load(playlist)
         for d in pdata['idList']:
             if d['title'] == old_title:
                  d['title'] = new_title
-        with open("new_playlist.json", "w") as playlist:
+        with open(playlist_path, "w") as playlist:
              json.dump(pdata, playlist)
 
     def playTrack(self):
@@ -112,7 +115,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
           
           #self.player = vlc.MediaPlayer("file:///home/gareth/vid-player/songs/"+selected_song+".mp3")
           if selected_song != None:
-            self.player.set_mrl("file:///home/gareth/vid-player/songs/"+selected_song+".mp3")
+            self.player.set_mrl("file:///home/gareth/sideplay/songs/"+selected_song+".mp3")
             if self.player.is_playing():
                 print(self.player.get_media())
                 self.player.stop()
@@ -158,11 +161,11 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         for s in self.search_data:
             if s['type'] == 'video' and s['title'] == selected_song:
                 #print(s['title'], s['videoId'])
-                with open("new_playlist.json", "r") as playlist:
+                with open(playlist_path, "r") as playlist:
                     all_songs = json.load(playlist)
                     new_title = selected_song.replace("|", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace("\"", "").replace("#", "")
                     all_songs['idList'].append({'title':new_title, 'id':s['videoId'], 'author':s['author']}) 
-                with open("new_playlist.json", "w") as playlist_new:
+                with open(playlist_path, "w") as playlist_new:
                     json.dump(all_songs, playlist_new)
                 backend.downloadVideo(s['videoId'], new_title) 
                 break
@@ -173,14 +176,14 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
     def downloadTrack(self):
         selected_song = self.songlist.currentItem().text() 
         song_data = {}
-        with open("new_playlist.json", "r") as playlist:
+        with open(playlist_path, "r") as playlist:
             data = json.load(playlist)
             for d in data['idList']:
                 if selected_song == d['title']:
                      # if file name > x characters, shorten and change in playlist 
                     before_len = len(selected_song)
                     orig_title = selected_song
-                    selected_song = selected_song.replace("|", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace("\"", "")
+                    selected_song = selected_song.replace("|", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace("\"", "").replace("#", "")
                     after_len = len(selected_song)
                     if before_len != after_len:
                         # replace title
