@@ -34,6 +34,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         self.pausebtn.clicked.connect(self.pauseTrack)
         self.downloadbtn.clicked.connect(self.downloadTrack)
         self.refresh_playlistbtn.clicked.connect(self.refreshPlaylist)
+        self.songlist.itemSelectionChanged.connect(self.syncRows)
         self.volume_control.setRange(0, 100)
         self.volume_control.setValue(50)
         self.volume_label.setText("50")
@@ -55,6 +56,9 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         res = self.songlist.findItems(self.search_bar.text(), Qt.MatchContains)
         return res
 
+    def syncRows(self):
+        self.otherinfolist.setCurrentRow(self.songlist.currentRow())
+
 
     def runSearch(self):
         term = self.search_bar.text()
@@ -66,6 +70,8 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
                     # put in playlist view
                     #print(r['title'])
                     self.songlist.addItem(r['title'])
+                    # function to convert view count to human readable form
+                    self.otherinfolist.addItem(str(r['viewCount'])+" | "+r['author'])
             self.online_dloadbtn.setEnabled(True)
         else:
             results = self.runLocalSearch()
@@ -96,6 +102,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
 
     def refreshPlaylist(self):
         self.songlist.clear()
+        self.otherinfolist.clear()
         self.getPlaylist()
 
     def replaceTitle(self, old_title, new_title):
