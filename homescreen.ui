@@ -26,7 +26,7 @@
       <x>20</x>
       <y>50</y>
       <width>281</width>
-      <height>251</height>
+      <height>271</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -69,6 +69,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="transferSongs">
+       <property name="text">
+        <string>Transfer New Songs</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QListWidget" name="songlist">
@@ -81,28 +88,10 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="playbtn">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>510</y>
-      <width>91</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Select song</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pausebtn">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>110</x>
       <y>510</y>
       <width>191</width>
       <height>71</height>

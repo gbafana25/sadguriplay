@@ -35,7 +35,7 @@ def convertToMp3(name, src):
 	#os.system("ffmpeg -i "+src+" "+name+".mp3")
 	subprocess.run(["ffmpeg", "-i", src, base_path+"songs/"+name+".mp3"])
 	# delete .mp4
-	subprocess.run(['rm', src])
+	subprocess.run(['rm', './'+src])
 
 
 def searchVideos(term):
@@ -135,3 +135,31 @@ def getVideoId(vid_id):
 		with open(playlist_path, "w") as playlist:
 			json.dump(plist, playlist)
 
+
+def copyNewSongs():
+	#subprocess.run(['mkdir', '-p', 'music_mnt'])
+	#subprocess.run(['go-mtpfs', 'music_mnt/', '&'])#, executable="/bin/bash", shell=True)
+	computer_dir = os.listdir("/home/gareth/sideplay/songs")
+	#phone_dir = os.listdir("./music_mnt/Internal shared storage/Download/")
+	phone_dir = subprocess.run(['/home/gareth/sideplay/sync_files.sh'], capture_output=True)
+	phone_contents = phone_dir.stdout.decode().split('\n')
+	stored_music = []
+	#print(phone_contents)
+	#print(type(phone_contents))
+	for p in phone_contents:
+		if p[-4:] == '.mp3':
+			stored_music.append(p[:-4])	
+
+	subprocess.run(['/home/gareth/sideplay/mount_phone.sh'])
+	for c in computer_dir:
+		if c not in stored_music:
+			print("Copying "+c)
+			subprocess.run(['cp', "/home/gareth/sideplay/songs/"+c, "./music_mnt/Internal shared storage/Download/"])
+
+	subprocess.run(['fusermount', '-u', 'music_mnt/'])
+	"""
+	for c in computer_dir:
+		if c not in phone_dir:
+			print(c)
+	subprocess.run(['fusermount', '-u', 'music_transfer'])
+	"""

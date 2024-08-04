@@ -30,8 +30,8 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         super().__init__()
         self.load()
 
-        self.playbtn.clicked.connect(self.playTrack)
-        self.pausebtn.clicked.connect(self.pauseTrack)
+        #self.playbtn.clicked.connect(self.playTrack)
+        self.pausebtn.clicked.connect(self.playTrack)
         self.downloadbtn.clicked.connect(self.downloadTrack)
         self.refresh_playlistbtn.clicked.connect(self.refreshPlaylist)
         self.songlist.itemSelectionChanged.connect(self.syncRows)
@@ -44,6 +44,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         self.online_dloadbtn.clicked.connect(self.downloadOnline)
         self.volume_control.valueChanged.connect(self.getVolume)
         self.dloads_only_btn.clicked.connect(self.filterByDownloaded)
+        self.transferSongs.clicked.connect(backend.copyNewSongs)
         self.getPlaylist()
         #self.getVolume()
         #self.songlist.insertItem(0, "test")
@@ -116,29 +117,35 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
              json.dump(pdata, playlist)
 
     def playTrack(self):
-          selected_song = self.songlist.currentItem().text()
-          
-          # get file w/ name matching selected_song
-          
-          #self.player = vlc.MediaPlayer("file:///home/gareth/vid-player/songs/"+selected_song+".mp3")
-          if selected_song != None:
-            self.player.set_mrl("file:///home/gareth/sideplay/songs/"+selected_song+".mp3")
-            if self.player.is_playing():
-                print(self.player.get_media())
-                self.player.stop()
-            # play song
-            self.player.play()
-            self.curr_song.setText(selected_song)
-
-            self.elapsed_timer = QTimer(self)
-            self.elapsed_timer.timeout.connect(self.updateDuration)
-            time.sleep(2)
-            dur_seconds = int((self.player.get_length() / 1000)%60)
-            dur_minutes = int((self.player.get_length() / 1000 / 60)%60)
-            self.duration_label.setText(str(dur_minutes)+":"+"{0:02d}".format(dur_seconds))
-            self.elapsed_timer.start(5)
+        base_path = "file:///home/gareth/sideplay/songs/"
+        if self.player.is_playing() == 0 and self.player.get_media() == None or self.player.get_media().get_mrl()[len(base_path):-4] != self.songlist.currentItem().text():
+            #print(self.player.is_playing())
+            selected_song = self.songlist.currentItem().text()
             
-            self.time_bar.setMaximum(self.player.get_length())
+            # get file w/ name matching selected_song
+            
+            #self.player = vlc.MediaPlayer("file:///home/gareth/vid-player/songs/"+selected_song+".mp3")
+            if selected_song != None:
+                self.player.set_mrl("file:///home/gareth/sideplay/songs/"+selected_song+".mp3")
+                if self.player.is_playing():
+                    print(self.player.get_media())
+                    self.player.stop()
+                # play song
+                self.player.play()
+                self.curr_song.setText(selected_song)
+
+                self.elapsed_timer = QTimer(self)
+                self.elapsed_timer.timeout.connect(self.updateDuration)
+                time.sleep(2)
+                dur_seconds = int((self.player.get_length() / 1000)%60)
+                dur_minutes = int((self.player.get_length() / 1000 / 60)%60)
+                self.duration_label.setText(str(dur_minutes)+":"+"{0:02d}".format(dur_seconds))
+                self.elapsed_timer.start(5)
+                
+                self.time_bar.setMaximum(self.player.get_length())
+        else:
+            #print(self.player.get_media().get_mrl())
+            self.player.pause()
 
     def updateDuration(self):
         seconds = int((self.player.get_time() / 1000) % 60)

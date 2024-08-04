@@ -9,3 +9,5 @@ Video/audio player for invidious instances. Made w/ Python and PyQt5
 
 ## TODO
 - settings page
+- auto-transfer songs to device
+    - read directory for song already saved, sync
