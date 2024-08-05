@@ -10,7 +10,7 @@ import os
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
-base_path = os.path.expanduser("~/sideplay/")
+base_path = os.path.expanduser("~/sadguriplay/")
 playlist_path = base_path+"new_playlist.json"
 
 class Gui(object):
@@ -117,7 +117,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
              json.dump(pdata, playlist)
 
     def playTrack(self):
-        base_path = "file:///home/gareth/sideplay/songs/"
+        base_path = "file:///home/gareth/sadguriplay/songs/"
         if self.player.is_playing() == 0 and self.player.get_media() == None or self.player.get_media().get_mrl()[len(base_path):-4] != self.songlist.currentItem().text():
             #print(self.player.is_playing())
             selected_song = self.songlist.currentItem().text()
@@ -126,7 +126,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
             
             #self.player = vlc.MediaPlayer("file:///home/gareth/vid-player/songs/"+selected_song+".mp3")
             if selected_song != None:
-                self.player.set_mrl("file:///home/gareth/sideplay/songs/"+selected_song+".mp3")
+                self.player.set_mrl("file:///home/gareth/sadguriplay/songs/"+selected_song+".mp3")
                 if self.player.is_playing():
                     print(self.player.get_media())
                     self.player.stop()

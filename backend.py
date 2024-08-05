@@ -11,7 +11,7 @@ import subprocess
 #BASE_URL = "https://invidious.slipfox.xyz/api/v1"
 BASE_URLS = ["https://inv.tux.pizza", "https://invidious.protokolla.fi", "https://invidious.io.lol"]
 URL = ""
-base_path = os.path.expanduser("~/sideplay/")
+base_path = os.path.expanduser("~/sadguriplay/")
 playlist_path = base_path+"new_playlist.json"
 
 # removes characters that cause ffmpeg command to fail
@@ -139,9 +139,9 @@ def getVideoId(vid_id):
 def copyNewSongs():
 	#subprocess.run(['mkdir', '-p', 'music_mnt'])
 	#subprocess.run(['go-mtpfs', 'music_mnt/', '&'])#, executable="/bin/bash", shell=True)
-	computer_dir = os.listdir("/home/gareth/sideplay/songs")
+	computer_dir = os.listdir(base_path+"songs")
 	#phone_dir = os.listdir("./music_mnt/Internal shared storage/Download/")
-	phone_dir = subprocess.run(['/home/gareth/sideplay/sync_files.sh'], capture_output=True)
+	phone_dir = subprocess.run([base_path+'sync_files.sh'], capture_output=True)
 	phone_contents = phone_dir.stdout.decode().split('\n')
 	stored_music = []
 	#print(phone_contents)
@@ -150,11 +150,11 @@ def copyNewSongs():
 		if p[-4:] == '.mp3':
 			stored_music.append(p[:-4])	
 
-	subprocess.run(['/home/gareth/sideplay/mount_phone.sh'])
+	subprocess.run([base_path+'mount_phone.sh'])
 	for c in computer_dir:
 		if c not in stored_music:
 			print("Copying "+c)
-			subprocess.run(['cp', "/home/gareth/sideplay/songs/"+c, "./music_mnt/Internal shared storage/Download/"])
+			subprocess.run(['cp', base_path+"songs/"+c, "./music_mnt/Internal shared storage/Download/"])
 
 	subprocess.run(['fusermount', '-u', 'music_mnt/'])
 	"""
