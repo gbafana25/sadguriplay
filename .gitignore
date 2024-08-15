@@ -3,3 +3,4 @@ __pycache__/
 *.mp4
 new_playlist.json
 music_mnt/
+env/

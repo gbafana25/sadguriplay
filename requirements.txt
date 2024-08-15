@@ -1,0 +1,9 @@
+certifi==2024.7.4
+charset-normalizer==3.3.2
+idna==3.7
+PyQt5==5.15.11
+PyQt5-Qt5==5.15.14
+PyQt5_sip==12.15.0
+python-vlc==3.0.20123
+requests==2.32.3
+urllib3==2.2.2
