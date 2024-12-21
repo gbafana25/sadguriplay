@@ -65,14 +65,16 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         term = self.search_bar.text()
         self.songlist.clear()
         if self.online_option.isChecked():
-            self.search_data = backend.searchVideos(term)
+            self.search_data = backend.searchVideosYoutube(term)
             for r in self.search_data:
-                if r['type'] == 'video':
+                self.songlist.addItem(r['title'])
+                self.otherinfolist.addItem(r['views']+" | "+r['duration'])
+             #   if r['type'] == 'video':
                     # put in playlist view
                     #print(r['title'])
-                    self.songlist.addItem(r['title'])
+              #      self.songlist.addItem(r['title'])
                     # function to convert view count to human readable form
-                    self.otherinfolist.addItem(str(r['viewCount'])+" | "+r['author'])
+              #      self.otherinfolist.addItem(str(r['viewCount'])+" | "+r['author'])
             self.online_dloadbtn.setEnabled(True)
         else:
             results = self.runLocalSearch()
@@ -173,15 +175,15 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         all_songs = {}
         new_title = None
         for s in self.search_data:
-            if s['type'] == 'video' and s['title'] == selected_song:
+            if s['title'] == selected_song:
                 #print(s['title'], s['videoId'])
                 with open(playlist_path, "r") as playlist:
                     all_songs = json.load(playlist)
                     new_title = selected_song.replace("|", "").replace(" ", "").replace("(", "").replace(")", "").replace("/", "").replace("\"", "").replace("#", "")
-                    all_songs['idList'].append({'title':new_title, 'id':s['videoId'], 'author':s['author']}) 
+                    all_songs['idList'].append({'title':new_title, 'id':s['id']}) 
                 with open(playlist_path, "w") as playlist_new:
                     json.dump(all_songs, playlist_new)
-                backend.downloadVideo(s['videoId'], new_title) 
+                backend.downloadVideoYoutube(s['id'], new_title) 
                 break
         self.refreshPlaylist()
         self.search_bar.setText("")
