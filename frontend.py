@@ -69,12 +69,6 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
             for r in self.search_data:
                 self.songlist.addItem(r['title'])
                 self.otherinfolist.addItem(r['views']+" | "+r['duration'])
-             #   if r['type'] == 'video':
-                    # put in playlist view
-                    #print(r['title'])
-              #      self.songlist.addItem(r['title'])
-                    # function to convert view count to human readable form
-              #      self.otherinfolist.addItem(str(r['viewCount'])+" | "+r['author'])
             self.online_dloadbtn.setEnabled(True)
         else:
             results = self.runLocalSearch()

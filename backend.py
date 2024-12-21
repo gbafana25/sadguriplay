@@ -30,15 +30,6 @@ def slugTerm(term):
 	return term.replace(" ", '-')
 
 
-def convertToMp3(name, src):	
-	print(name)
-	print(src)
-	#os.system("ffmpeg -i "+src+" "+name+".mp3")
-	subprocess.run(["ffmpeg", "-i", src, base_path+"songs/"+name+".mp3"])
-	# delete .mp4
-	subprocess.run(['rm', './'+src])
-
-
 def searchVideos(term):
 	print("searching...")
 	r = requests.get(BASE_URLS[2]+"/api/v1/search?q="+term, headers=h)
@@ -86,26 +77,9 @@ def searchVideosYoutube(term):
 	return songlist
 
 
-def downloadVideo(l, full_name):
-	v = requests.get(BASE_URLS[0]+"/api/v1/videos/"+l, headers=h)
-	p = json.loads(v.text)	
-	# list index correlates to video quality 
-	# 0 - usually 144p
-
-	url = p['formatStreams'][len(p['formatStreams'])-1]['url']
-	print("downloading video...")
-	raw = requests.get(url)
-	ext = ".mp4"
-	filename = l.strip()
-	with open(filename+ext, "wb+") as o:
-		o.write(raw.content)
-		o.close()
-
-	convertToMp3(full_name, l+".mp4")	
-
 def downloadVideoYoutube(l, fullname):
-	subprocess.run(['./yt-dlp_linux', '-x', '--audio-format', 'mp3', '-o', base_path+"songs/"+fullname+".%(ext)s",'https://youtube.com/watch?v='+l])
-
+	subprocess.run(['yt-dlp_linux', '-x', '--audio-format', 'mp3', '-o', base_path+"songs/"+fullname+".%(ext)s",'https://youtube.com/watch?v='+l])
+	subprocess.run(['touch', base_path+"songs/"+fullname+".mp3"])
 
 def testInstances():
 	for i in range(len(BASE_URLS)):
