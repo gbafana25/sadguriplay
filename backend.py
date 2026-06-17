@@ -5,6 +5,7 @@ import sys
 import os
 import time
 import subprocess
+import yt_dlp
 
 # add list of instances
 #BASE_URL = "https://vid.puffyan.us/api/v1"
@@ -77,9 +78,19 @@ def searchVideosYoutube(term):
 	return songlist
 
 
-def downloadVideoYoutube(l, fullname):
-	subprocess.run(['yt-dlp_linux', '-x', '--audio-format', 'mp3', '-o', base_path+"songs/"+fullname+".%(ext)s",'https://youtube.com/watch?v='+l])
-	subprocess.run(['touch', base_path+"songs/"+fullname+".mp3"])
+def downloadVideoYoutube(l):
+    os.chdir('songs/')
+    url = ['https://youtube.com/watch?v='+l]
+    ydl_opts = {
+        'format': 'mp3/bestaudio/best',
+        'postprocessors': [{  # Extract audio using ffmpeg
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+        }]
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        err = ydl.download(url)
+        os.chdir('../')
 
 def testInstances():
 	for i in range(len(BASE_URLS)):

@@ -81,10 +81,12 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
         
 
     def getPlaylist(self):
-          with open(playlist_path, "r") as playlist:
-                self.search_data = json.load(playlist)
-                for d in self.search_data['idList']:
-                      self.songlist.addItem(d['title'])
+        for f in os.listdir("songs/"):
+            self.songlist.addItem(f)
+          #with open(playlist_path, "r") as playlist:
+          #      self.search_data = json.load(playlist)
+          #      for d in self.search_data['idList']:
+          #            self.songlist.addItem(d['title'])
     
     def filterByDownloaded(self):
         self.songlist.clear()
@@ -177,7 +179,7 @@ class VidPlayer(QtWidgets.QMainWindow, Gui):
                     all_songs['idList'].append({'title':new_title, 'id':s['id']}) 
                 with open(playlist_path, "w") as playlist_new:
                     json.dump(all_songs, playlist_new)
-                backend.downloadVideoYoutube(s['id'], new_title) 
+                backend.downloadVideoYoutube(s['id']) 
                 break
         self.refreshPlaylist()
         self.search_bar.setText("")
