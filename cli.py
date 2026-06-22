@@ -11,5 +11,9 @@ if __name__ == "__main__":
         for v in range(len(videos)):
             print(str(v)+") ", videos[v]['title'], "|", videos[v]['duration'], "|", videos[v]['views'])
         selection = int(input("Download (number)> "))
-        backend.downloadVideoYoutube(videos[selection]['id'])
+        format = input("Audio or video (a or v)> ")
+        if format == 'a':
+            backend.downloadVideoYoutube(videos[selection]['id'])
+        elif format == 'v':
+            backend.downloadVideoYoutube(videos[selection]['id'], False)
 

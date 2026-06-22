@@ -1,4 +1,5 @@
 songs/
+videos/
 __pycache__/
 *.mp4
 new_playlist.json

@@ -78,19 +78,25 @@ def searchVideosYoutube(term):
 	return songlist
 
 
-def downloadVideoYoutube(l):
-    os.chdir('songs/')
-    url = ['https://youtube.com/watch?v='+l]
-    ydl_opts = {
-        'format': 'mp3/bestaudio/best',
-        'postprocessors': [{  # Extract audio using ffmpeg
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-        }]
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        err = ydl.download(url)
-        os.chdir('../')
+def downloadVideoYoutube(l, extract_audio=True):
+	url = ['https://youtube.com/watch?v='+l]
+	ydl_opts = {
+	    'format': 'mp3/bestaudio/best',
+	    'postprocessors': [{  # Extract audio using ffmpeg
+	        'key': 'FFmpegExtractAudio',
+	        'preferredcodec': 'mp3',
+	    }]
+	}
+	if extract_audio:
+		with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+			os.chdir('songs/')
+			err = ydl.download(url)
+			os.chdir('../')
+	else:
+		with yt_dlp.YoutubeDL() as ydl:
+			os.chdir('videos/')
+			err = ydl.download(url)
+			os.chdir('../')
 
 def testInstances():
 	for i in range(len(BASE_URLS)):
